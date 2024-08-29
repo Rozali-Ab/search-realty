@@ -1,0 +1,68 @@
+{
+  "data": [
+    {
+    "id": "1",
+    "rooms": "s",
+    "floor": "1",
+    "area": "22.94",
+    "price": "4500000",
+    "img": "room.png"
+  },
+    {
+      "id": "2",
+      "rooms": "1",
+      "floor": "1",
+      "area": "29.44",
+      "price": "5500000",
+      "img": "room.png"
+    },
+    {
+      "id": "3",
+      "rooms": "2",
+      "floor": "1",
+      "area": "44.88",
+      "price": "7500000",
+      "img": "room.png"
+    },
+    {
+      "id": "4",
+      "rooms": "3",
+      "floor": "1",
+      "area": "55.32",
+      "price": "9500000",
+      "img": "room.png"
+    },
+    {
+      "id": "5",
+      "rooms": "s",
+      "floor": "10",
+      "area": "22.94",
+      "price": "44500000",
+      "img": "room.png"
+    },
+    {
+      "id": "6",
+      "rooms": "1",
+      "floor": "3",
+      "area": "29.44",
+      "price": "55500000",
+      "img": "room.png"
+    },
+    {
+      "id": "7",
+      "rooms": "2",
+      "floor": "5",
+      "area": "44.88",
+      "price": "77500000",
+      "img": "room.png"
+    },
+    {
+      "id": "8",
+      "rooms": "3",
+      "floor": "8",
+      "area": "55.32",
+      "price": "99500000",
+      "img": "room.png"
+    }
+  ]
+}
