@@ -231,7 +231,8 @@
       }
 
       &__body {
-        width: calc(50vw - 1rem);
+        width: calc(50vw - 2rem);
+        max-width: 25rem;
         height: 10rem;
 
         img {
@@ -239,16 +240,13 @@
         }
       }
 
-      &__price {
-        width: calc(50vw - 1rem);
-
-        &__total {
-          font-size: 2.3rem;
-        }
+      &__price__total {
+          font-size: 1.5rem;
       }
 
      &__btn {
-       width: calc(50vw - 1rem);
+       width: calc(50vw - 2rem);
+       max-width: 25rem;
        height: 4rem;
 
        &__span {

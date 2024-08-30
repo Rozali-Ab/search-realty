@@ -174,18 +174,24 @@
   .show-filter {
     display: none;
     visibility: hidden;
+    width: calc(50vw - 3rem);
+    max-width: 27rem;
+    height: 40px;
+    font-size: 14px;
+    text-transform: uppercase;
+    color: #fff;
+    background-color: #70D24E;
+    border: none;
+    border-radius: 5px;
 
     @media (max-width: 768px) {
       display: block;
       visibility: visible;
-      width: 200px;
-      height: 40px;
-      font-size: 14px;
-      text-transform: uppercase;
-      color: #fff;
-      background-color: #70D24E;
-      border: none;
-      border-radius: 5px;
+      margin: 0;
+      position: absolute;
+      left: 50%;
+      -ms-transform: translate(-50%, -50%);
+      transform: translate(-50%, -50%);
     }
   }
 
@@ -195,8 +201,8 @@
     @media (max-width: 768px) {
       display: block;
       position: absolute;
-      top: 0;
-      right: 0;
+      top: 5px;
+      right: 5px;
       width: 30px;
       height: 30px;
       border-radius: 5px;
@@ -221,20 +227,25 @@
     flex-direction: row;
     width: 100%;
 
-
+    @media (min-width: 769px) {
+      justify-content: center;
+      flex-wrap: wrap;
+    }
     @media (max-width: 768px) {
-      position: absolute;
-      z-index: 111;
-      bottom: 0;
-      left: 0;
-      height: 0;
+      flex-direction: column;
+      align-items: center;
+      visibility: hidden;
+      max-height: 0;
       opacity: 0;
-      transition: height 300ms ease-out;
+      transition: max-height 300ms ease;
 
       &--active {
-        min-height: 50vh;
+        visibility: visible;
+        padding: 30px 0 30px 0;
+        max-height: 100vh;
         opacity: 1;
-        background-color: rgba(255, 255, 255, 0.78);
+        background-color: rgb(255, 255, 255);
+        border-radius: 10px;
       }
     }
 
@@ -244,7 +255,6 @@
       &__buttons {
         display: flex;
         flex-direction: row;
-        flex-wrap: wrap;
 
         input[type="checkbox"] {
           position: absolute;
@@ -381,11 +391,7 @@
       }
     }
 
-    @media (max-width: 768px) {
-      flex-direction: column;
-      align-items: center;
 
-    }
   }
 
 </style>

@@ -91,6 +91,7 @@
 
     &__separator {
       width: 5px;
+      margin: 0 3px 0 3px;
       font-size: 12px;
       font-weight: 700;
       line-height: 28px;
