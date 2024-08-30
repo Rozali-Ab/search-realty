@@ -46,6 +46,7 @@
 
 <style scoped lang="scss">
   .no-matches {
+    padding: 30px;
     font-size: 1.5rem;
   }
 </style>

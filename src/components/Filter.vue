@@ -47,13 +47,6 @@
   };
 
   const onResetFilter = () => {
-    // form.rooms = [];
-    // form.floorMin = 1;
-    // form.floorMax = 50;
-    // form.areaMin = 1;
-    // form.areaMax = 1000;
-    // form.priceMin = 1;
-    // form.priceMax = 100;
 
     router.push({
       path: '/flats',

@@ -20,15 +20,26 @@
     return Math.min(Math.max(percent, 0), 100);
   });
 
+  let prevMinValue = minValue.value;
+  let prevMaxValue = maxValue.value;
+
   watch(minValue, (newValue) => {
     if (newValue > maxValue.value) {
       maxValue.value = newValue;
+    } else if (newValue === maxValue.value) {
+      minValue.value = prevMinValue;
+    } else {
+      prevMinValue = newValue;
     }
   });
 
   watch(maxValue, (newValue) => {
     if (newValue < minValue.value) {
       minValue.value = newValue;
+    } else if (newValue === minValue.value) {
+      maxValue.value = prevMaxValue;
+    } else {
+      prevMaxValue = newValue;
     }
   })
 
@@ -139,6 +150,7 @@
     top: 0;
     bottom: 0;
     background-color: transparent;
+    pointer-events: none;
   }
   .slider-track {
     width: 175px;
@@ -186,6 +198,7 @@
     width: 24px;
     border-radius: 50%;
     background-color: #70D24E;
+    pointer-events: auto;
   }
 
 </style>
