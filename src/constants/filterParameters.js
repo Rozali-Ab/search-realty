@@ -1,0 +1,8 @@
+export const FILTER_PARAMETERS = {
+  FLOOR_MIN: 1,
+  FLOOR_MAX: 50,
+  AREA_MIN: 1,
+  AREA_MAX: 100,
+  PRICE_MIN: 1,
+  PRICE_MAX: 100,
+}

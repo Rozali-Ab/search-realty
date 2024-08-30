@@ -3,6 +3,7 @@
 
   import RangeSlider from "./RangeSlider.vue";
   import { useRoute, useRouter } from "vue-router";
+  import { FILTER_PARAMETERS } from "../constants/filterParameters.js";
 
   const router = useRouter();
   const route = useRoute();
@@ -13,12 +14,12 @@
 
   const form = reactive({
     rooms: route.query.rooms ? route.query.rooms.split(',') : [],
-    floorMin: route.query.floorMin ? Number(route.query.floorMin) : 1,
-    floorMax: route.query.floorMax ? Number(route.query.floorMax) : 50,
-    areaMin: route.query.areaMin ? Number(route.query.areaMin) : 1,
-    areaMax: route.query.areaMax ? Number(route.query.areaMax) : 1000,
-    priceMin: route.query.priceMin ? Number(route.query.priceMin) : 1,
-    priceMax: route.query.priceMax ? Number(route.query.priceMax) : 100
+    floorMin: route.query.floorMin ? Number(route.query.floorMin) : FILTER_PARAMETERS.FLOOR_MIN,
+    floorMax: route.query.floorMax ? Number(route.query.floorMax) : FILTER_PARAMETERS.FLOOR_MAX,
+    areaMin: route.query.areaMin ? Number(route.query.areaMin) : FILTER_PARAMETERS.AREA_MIN,
+    areaMax: route.query.areaMax ? Number(route.query.areaMax) : FILTER_PARAMETERS.AREA_MAX,
+    priceMin: route.query.priceMin ? Number(route.query.priceMin) : FILTER_PARAMETERS.PRICE_MIN,
+    priceMax: route.query.priceMax ? Number(route.query.priceMax) : FILTER_PARAMETERS.PRICE_MAX
   });
 
   const isSelected = (room) => {
@@ -31,14 +32,14 @@
 
     if (form.rooms.length) queryParams.rooms = form.rooms.join(',');
 
-    form.floorMin !== 1 ? queryParams.floorMin = form.floorMin: '' ;
-    form.floorMax !== 50 ? queryParams.floorMax = form.floorMax: '';
+    form.floorMin !== FILTER_PARAMETERS.FLOOR_MIN ? queryParams.floorMin = form.floorMin: '' ;
+    form.floorMax !== FILTER_PARAMETERS.FLOOR_MAX ? queryParams.floorMax = form.floorMax: '';
 
-    form.areaMin !== 1 ? queryParams.areaMin = form.areaMin: '';
-    form.areaMax !== 1000 ? queryParams.areaMax = form.areaMax: '';
+    form.areaMin !== FILTER_PARAMETERS.AREA_MIN ? queryParams.areaMin = form.areaMin: '';
+    form.areaMax !== FILTER_PARAMETERS.AREA_MAX ? queryParams.areaMax = form.areaMax: '';
 
-    form.priceMin !== 1 ? queryParams.priceMin = form.priceMin: '';
-    form.priceMax !== 100 ? queryParams.priceMax = form.priceMax: '';
+    form.priceMin !== FILTER_PARAMETERS.PRICE_MIN ? queryParams.priceMin = form.priceMin: '';
+    form.priceMax !== FILTER_PARAMETERS.PRICE_MAX ? queryParams.priceMax = form.priceMax: '';
 
     router.push({
       path: '/flats',
@@ -58,12 +59,12 @@
       () => route.query,
       (newQuery) => {
         form.rooms = newQuery.rooms ? newQuery.rooms.split(',') : [];
-        form.floorMin = newQuery.floorMin ? Number(newQuery.floorMin) : 1;
-        form.floorMax = newQuery.floorMax ? Number(newQuery.floorMax) : 50;
-        form.areaMin = newQuery.areaMin ? Number(newQuery.areaMin) : 1;
-        form.areaMax = newQuery.areaMax ? Number(newQuery.areaMax) : 1000;
-        form.priceMin = newQuery.priceMin ? Number(newQuery.priceMin) : 1;
-        form.priceMax = newQuery.priceMax ? Number(newQuery.priceMax) : 100;
+        form.floorMin = newQuery.floorMin ? Number(newQuery.floorMin) : FILTER_PARAMETERS.FLOOR_MIN;
+        form.floorMax = newQuery.floorMax ? Number(newQuery.floorMax) : FILTER_PARAMETERS.FLOOR_MAX;
+        form.areaMin = newQuery.areaMin ? Number(newQuery.areaMin) : FILTER_PARAMETERS.AREA_MIN;
+        form.areaMax = newQuery.areaMax ? Number(newQuery.areaMax) : FILTER_PARAMETERS.AREA_MAX;
+        form.priceMin = newQuery.priceMin ? Number(newQuery.priceMin) : FILTER_PARAMETERS.PRICE_MIN;
+        form.priceMax = newQuery.priceMax ? Number(newQuery.priceMax) : FILTER_PARAMETERS.PRICE_MAX;
       },
       { immediate: true }
   );
@@ -110,8 +111,8 @@
         <RangeSlider
             v-model:min-value="form.floorMin"
             v-model:max-value="form.floorMax"
-            :min="1"
-            :max="50"
+            :min="FILTER_PARAMETERS.FLOOR_MIN"
+            :max="FILTER_PARAMETERS.FLOOR_MAX"
             :step="1"
         />
       </div>
@@ -123,8 +124,8 @@
         <RangeSlider
             v-model:min-value="form.areaMin"
             v-model:max-value="form.areaMax"
-            :min="1"
-            :max="100"
+            :min="FILTER_PARAMETERS.AREA_MIN"
+            :max="FILTER_PARAMETERS.AREA_MAX"
             :step="0.1"
         />
       </div>
@@ -137,8 +138,8 @@
         <RangeSlider
             v-model:min-value="form.priceMin"
             v-model:max-value="form.priceMax"
-            :min="1"
-            :max="100"
+            :min="FILTER_PARAMETERS.PRICE_MIN"
+            :max="FILTER_PARAMETERS.PRICE_MAX"
             :step="0.1"
         />
       </div>

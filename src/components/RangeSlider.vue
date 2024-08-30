@@ -1,5 +1,5 @@
 <script setup>
-  import { computed, defineProps, watch } from 'vue';
+  import { computed, defineProps } from 'vue';
 
   const minValue = defineModel('minValue');
   const maxValue = defineModel('maxValue');
@@ -20,29 +20,20 @@
     return Math.min(Math.max(percent, 0), 100);
   });
 
-  let prevMinValue = minValue.value;
-  let prevMaxValue = maxValue.value;
-
-  watch(minValue, (newValue) => {
-    if (newValue > maxValue.value) {
-      maxValue.value = newValue;
-    } else if (newValue === maxValue.value) {
-      minValue.value = prevMinValue;
-    } else {
-      prevMinValue = newValue;
+  const minInputHandler = (evt) => {
+    if (evt.target.value > maxValue.value || evt.target.value < minValue.value) {
+      evt.target.value = maxValue.value;
     }
-  });
 
-  watch(maxValue, (newValue) => {
-    if (newValue < minValue.value) {
-      minValue.value = newValue;
-    } else if (newValue === minValue.value) {
-      maxValue.value = prevMaxValue;
-    } else {
-      prevMaxValue = newValue;
+    minValue.value = evt.target.value;
+  }
+  const maxInputHandler = (evt) => {
+    if (evt.target.value < minValue.value) {
+      evt.target.value = minValue.value;
     }
-  })
 
+    maxValue.value = evt.target.value;
+  }
 </script>
 
 <template>
@@ -50,14 +41,20 @@
     <div class="minmax-inputs">
       <input
           type="number"
+          :min="min"
+          :max="max"
           :step="props.step"
           v-model="minValue"
+          @input="minInputHandler"
       >
       <div class="minmax-inputs__separator">-</div>
       <input
           type="number"
+          :min="min"
+          :max="max"
           :step="props.step"
           v-model="maxValue"
+          @input="maxInputHandler"
       >
     </div>
     <div class="container">
@@ -74,6 +71,7 @@
             :max="max"
             :step="props.step"
             v-model="minValue"
+            @input="minInputHandler"
         >
         <input
             id="slider-2"
@@ -83,6 +81,7 @@
             :max="max"
             :step="props.step"
             v-model="maxValue"
+            @input="maxInputHandler"
         >
       </div>
     </div>

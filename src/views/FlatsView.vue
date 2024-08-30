@@ -3,6 +3,7 @@
   import { useRoute } from "vue-router";
   import data from "../mock/mock.json";
   import { ref, watch } from "vue";
+  import { FILTER_PARAMETERS } from "../constants/filterParameters.js";
 
   const route = useRoute();
 
@@ -13,12 +14,12 @@
     const query = route.query;
 
     const flatsQuery = query.rooms ? query.rooms.split(',') : [];
-    const floorMin = parseInt(query.floorMin) || 1;
-    const floorMax = parseInt(query.floorMax) || 50;
-    const areaMin = parseFloat(query.areaMin) || 1;
-    const areaMax = parseFloat(query.areaMax) || 1000;
-    const priceMin = parseFloat(query.priceMin) || 1;
-    const priceMax = parseFloat(query.priceMax) || 100;
+    const floorMin = parseInt(query.floorMin) || FILTER_PARAMETERS.FLOOR_MIN;
+    const floorMax = parseInt(query.floorMax) || FILTER_PARAMETERS.FLOOR_MAX;
+    const areaMin = parseFloat(query.areaMin) || FILTER_PARAMETERS.AREA_MIN;
+    const areaMax = parseFloat(query.areaMax) || FILTER_PARAMETERS.AREA_MAX;
+    const priceMin = parseFloat(query.priceMin) || FILTER_PARAMETERS.PRICE_MIN;
+    const priceMax = parseFloat(query.priceMax) || FILTER_PARAMETERS.PRICE_MAX;
 
     filteredFlats.value = flats.value.filter((flat) => {
       const matchesRooms = flatsQuery.length === 0 || flatsQuery.includes(flat.rooms.toString());
