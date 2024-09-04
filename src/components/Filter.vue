@@ -271,6 +271,7 @@
           color: #2C323A;
           user-select: none;
           text-align: center;
+          cursor: pointer;
 
           &.selected {
             background-color: #70D24E;
@@ -309,11 +310,6 @@
       width: 20rem;
       padding-top: 27px;
 
-      a {
-        width: 100%;
-        text-align: center;
-      }
-
       &__submit {
         width: 100%;
         height: 40px;
@@ -322,6 +318,16 @@
         color: #fff;
         background-color: #70D24E;
         border-radius: 5px;
+
+
+        &:hover {
+          background-color: #4ccd20;
+        }
+
+        &:active {
+          transform: scale(0.95);
+          box-shadow: 0 5px 10px 0 #70D24E;
+        }
       }
 
       &__reset {
@@ -346,6 +352,7 @@
 
       button {
         border: none;
+        cursor: pointer;
       }
     }
 
@@ -367,7 +374,6 @@
       width: 1px;
       height: 20px;
       background-color: #EBEBEB;
-
       margin-top: 40px;
 
       @media (min-width: 1200px) {

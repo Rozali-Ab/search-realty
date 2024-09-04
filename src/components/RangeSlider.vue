@@ -175,6 +175,7 @@
     bottom: 0;
     background-color: transparent;
     pointer-events: none;
+    cursor: pointer;
   }
   .slider-track {
     width: 175px;
@@ -191,7 +192,7 @@
   }
   input[type="range"]::-moz-range-track {
     -moz-appearance: none;
-    height: 5px;
+    height: 2px;
   }
   input[type="range"]::-ms-track {
     appearance: none;

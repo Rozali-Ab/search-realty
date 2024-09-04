@@ -196,6 +196,15 @@
       &__span {
         display: none;
       }
+
+      &:hover {
+        background-color: #4ccd20;
+      }
+
+      &:active {
+        transform: scale(0.95);
+        box-shadow: 0 5px 10px 0 #70D24E;
+      }
     }
 
     &--active {
