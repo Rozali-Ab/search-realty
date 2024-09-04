@@ -21,18 +21,43 @@
   });
 
   const minInputHandler = (evt) => {
-    if (evt.target.value > maxValue.value || evt.target.value < minValue.value) {
-      evt.target.value = maxValue.value;
+
+    let value = evt.target.value;
+
+    if (value === '') {
+      minValue.value = '';
+      return;
     }
 
-    minValue.value = evt.target.value;
+    if (value > maxValue.value || value < minValue.value ) {
+      value = maxValue.value;
+    }
+
+    if (value <= props.min) {
+      value = props.min;
+    }
+
+    minValue.value = value;
   }
+
   const maxInputHandler = (evt) => {
-    if (evt.target.value < minValue.value) {
-      evt.target.value = minValue.value;
+
+    let value = evt.target.value;
+
+    if (value === '') {
+      maxValue.value = '';
+      return;
     }
 
-    maxValue.value = evt.target.value;
+    if (value < minValue.value || value > maxValue.value) {
+      value = minValue.value;
+    }
+
+    if (value >= props.max) {
+      value = props.max;
+    }
+
+    maxValue.value = value;
   }
 </script>
 
