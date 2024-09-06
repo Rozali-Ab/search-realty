@@ -8,7 +8,7 @@
         <span
             class="filter__rooms__checkbox"
             :class="{ selected: isSelected(room) }">
-          {{roomsValuesLayout[room]}}
+          {{ROOMS_CHECKBOX_VALUES[room]}}
         </span>
       </label>
     </div>
@@ -17,16 +17,11 @@
 
 <script setup>
 
+  import { ROOMS_CHECKBOX_VALUES } from "../constants/roomsCheckboxValues.js";
+
   const selectedRooms = defineModel('selectedRooms');
 
-  const roomsValues = ['s', '1', '2', '3'];
-
-  const roomsValuesLayout = {
-    's': 'S',
-    '1': '1k',
-    '2': '2k',
-    '3': '3k'
-  }
+  const roomsValues = Object.keys(ROOMS_CHECKBOX_VALUES);
 
   const isSelected = (room) => {
     return selectedRooms.value.includes(room);

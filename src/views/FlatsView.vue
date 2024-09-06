@@ -1,56 +1,52 @@
 <script setup>
-  import FlatsList from "../components/FlatsList.vue";
+  import { computed, onBeforeUpdate, onMounted, ref, unref } from "vue";
   import { data } from "../mock/mock.json";
-  import { onMounted, ref, watch } from "vue";
   import { useFlatsFilter } from "../composables/useFlatsFilter.js";
   import ListSkeleton from "../components/ListSkeleton.vue";
+  import FlatsList from "../components/FlatsList.vue";
 
   const {filterParams} = useFlatsFilter();
 
   const flats = ref([]);
-  const filteredFlats = ref([]);
   const isLoading = ref(true);
 
-  const filterFlats = () => {
-    setTimeout(() => {
-      const rooms = filterParams.rooms;
-      const floorMin = filterParams.floorMin;
-      const floorMax = filterParams.floorMax;
-      const areaMin = filterParams.areaMin;
-      const areaMax = filterParams.areaMax;
-      const priceMin = filterParams.priceMin;
-      const priceMax = filterParams.priceMax;
+  const filteredFlats = computed(() => {
+    const {
+      rooms,
+      floorMin,
+      floorMax,
+      areaMin,
+      areaMax,
+      priceMin,
+      priceMax
 
-      filteredFlats.value = flats.value.filter((flat) => {
-        const matchesRooms = rooms.length === 0 || rooms.includes(flat.rooms.toString());
-        const matchesFloor = flat.floor >= floorMin && flat.floor <= floorMax;
-        const matchesArea = flat.area >= areaMin && flat.area <= areaMax;
-        const matchesPrice = flat.price >= priceMin * 1000000 && flat.price <= priceMax * 1000000;
+    } = unref(filterParams);
 
-        return matchesRooms && matchesFloor && matchesArea && matchesPrice;
-      });
+    return flats.value.filter((flat) => {
+      const matchesRooms = !rooms.length || rooms.includes(flat.rooms.toString());
+      const matchesFloor = flat.floor >= floorMin && flat.floor <= floorMax;
+      const matchesArea = flat.area >= areaMin && flat.area <= areaMax;
+      const matchesPrice = flat.price >= priceMin * 1000000 && flat.price <= priceMax * 1000000;
 
-      isLoading.value = false;
-    }, 500)
-  };
+      return matchesRooms && matchesFloor && matchesArea && matchesPrice;
+    })
+  });
 
   onMounted(() => {
     setTimeout(() => {
       flats.value = data;
 
-      filterFlats();
       isLoading.value = false;
     }, 500);
   });
 
-  watch(
-      filterParams,
-      () => {
-        isLoading.value = true;
-        filterFlats();
-      },
-      { deep: true }
-  );
+  onBeforeUpdate(() => {
+    isLoading.value = true;
+
+    setTimeout(() => {
+      isLoading.value = false;
+    }, 500);
+  })
 </script>
 
 <template>
