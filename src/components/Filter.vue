@@ -138,11 +138,10 @@
         >
           Применить
         </button>
-        <button
+        <button class="filter__buttons__reset"
             @click="onResetFilter"
-            class="filter__buttons__reset"
         >
-          Сбросить фильтр
+          <span>Сбросить фильтр</span>
         </button>
       </div>
     </form>
@@ -266,7 +265,6 @@
         background-color: #70D24E;
         border-radius: 5px;
 
-
         &:hover {
           background-color: #4ccd20;
         }
@@ -279,23 +277,31 @@
 
       &__reset {
         position: relative;
-        margin-top: 10px;
+        width: 100%;
+        height: 40px;
         background: none;
-        font-size: 10px;
-        font-weight: 700;
-        text-transform: uppercase;
-        color: #2C323A;
 
-        &:after {
-          content: '';
-          height: 1px;
-          width: 108px;
-          position: absolute;
-          bottom: -3px;
-          left: 0;
-          background-color: #70D24E;
+        span {
+          display: inline-block;
+          margin-top: -10px;
+          font-size: 10px;
+          font-weight: 700;
+          text-transform: uppercase;
+          color: #2C323A;
+
+          &:after {
+            content: '';
+            height: 1px;
+            width: 108px;
+            position: absolute;
+            bottom: 5px;
+            transform: translate(-100%, -50%);
+            background-color: #70D24E;
+          }
+
         }
       }
+
 
       button {
         border: none;
