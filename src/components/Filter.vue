@@ -1,48 +1,49 @@
 <script setup>
-  import { ref, reactive, watch } from 'vue';
+  import { ref, watch } from 'vue';
 
   import RangeSlider from "./RangeSlider.vue";
-  import { useRoute, useRouter } from "vue-router";
-  import { FILTER_PARAMETERS } from "../constants/filterParameters.js";
+  import RoomsCheckbox from "./RoomsCheckbox.vue";
 
-  const router = useRouter();
-  const route = useRoute();
+  import { useFlatsFilter } from "../composables/useFlatsFilter.js";
+  import router from "../router/index.js";
+  import { DEFAULT_FILTER_PARAMETERS } from "../constants/filterParameters.js";
 
   const isFilterVisible = ref(false);
 
-  const roomsValues = ['s', '1', '2', '3'];
+  const {filterParams} = useFlatsFilter();
 
-  const form = reactive({
-    rooms: route.query.rooms ? route.query.rooms.split(',') : [],
-    floorMin: route.query.floorMin ? Number(route.query.floorMin) : FILTER_PARAMETERS.FLOOR_MIN,
-    floorMax: route.query.floorMax ? Number(route.query.floorMax) : FILTER_PARAMETERS.FLOOR_MAX,
-    areaMin: route.query.areaMin ? Number(route.query.areaMin) : FILTER_PARAMETERS.AREA_MIN,
-    areaMax: route.query.areaMax ? Number(route.query.areaMax) : FILTER_PARAMETERS.AREA_MAX,
-    priceMin: route.query.priceMin ? Number(route.query.priceMin) : FILTER_PARAMETERS.PRICE_MIN,
-    priceMax: route.query.priceMax ? Number(route.query.priceMax) : FILTER_PARAMETERS.PRICE_MAX
-  });
+  const rooms = ref(filterParams.rooms);
+  const floorMin = ref(filterParams.floorMin);
+  const floorMax = ref(filterParams.floorMax)
+  const areaMin = ref(filterParams.areaMin);
+  const areaMax = ref(filterParams.areaMax);
+  const priceMin = ref(filterParams.priceMin);
+  const priceMax = ref(filterParams.priceMax);
 
-  const isSelected = (room) => {
-    return form.rooms.includes(room);
-  };
+
+  //проверяем изменились ли параметры фильтра, добавляем в запрос при изменении
+  const createNewFilterQuery = () => {
+    const queryParams = {};
+
+    if (rooms.value.length) queryParams.rooms = rooms.value.join(',');
+
+    floorMin.value !== DEFAULT_FILTER_PARAMETERS.floorMin ? queryParams.floorMin = floorMin.value: '' ;
+    floorMax.value !== DEFAULT_FILTER_PARAMETERS.floorMax ? queryParams.floorMax = floorMax.value: '';
+
+    areaMin.value !== DEFAULT_FILTER_PARAMETERS.areaMin ? queryParams.areaMin = areaMin.value: '';
+    areaMax.value !== DEFAULT_FILTER_PARAMETERS.areaMax ? queryParams.areaMax = areaMax.value: '';
+
+    priceMin.value !== DEFAULT_FILTER_PARAMETERS.priceMin ? queryParams.priceMin = priceMin.value: '';
+    priceMax.value !== DEFAULT_FILTER_PARAMETERS.priceMax ? queryParams.priceMax = priceMax.value: '';
+
+    return queryParams;
+  }
 
   const onApplyFilter = () => {
 
-    const queryParams = {};
-
-    if (form.rooms.length) queryParams.rooms = form.rooms.join(',');
-
-    form.floorMin !== FILTER_PARAMETERS.FLOOR_MIN ? queryParams.floorMin = form.floorMin: '' ;
-    form.floorMax !== FILTER_PARAMETERS.FLOOR_MAX ? queryParams.floorMax = form.floorMax: '';
-
-    form.areaMin !== FILTER_PARAMETERS.AREA_MIN ? queryParams.areaMin = form.areaMin: '';
-    form.areaMax !== FILTER_PARAMETERS.AREA_MAX ? queryParams.areaMax = form.areaMax: '';
-
-    form.priceMin !== FILTER_PARAMETERS.PRICE_MIN ? queryParams.priceMin = form.priceMin: '';
-    form.priceMax !== FILTER_PARAMETERS.PRICE_MAX ? queryParams.priceMax = form.priceMax: '';
+    const queryParams = createNewFilterQuery();
 
     router.push({
-      path: '/flats',
       query: queryParams
     })
   };
@@ -50,24 +51,20 @@
   const onResetFilter = () => {
 
     router.push({
-      path: '/flats',
       query: {}
     })
   };
 
-  watch(
-      () => route.query,
-      (newQuery) => {
-        form.rooms = newQuery.rooms ? newQuery.rooms.split(',') : [];
-        form.floorMin = newQuery.floorMin ? Number(newQuery.floorMin) : FILTER_PARAMETERS.FLOOR_MIN;
-        form.floorMax = newQuery.floorMax ? Number(newQuery.floorMax) : FILTER_PARAMETERS.FLOOR_MAX;
-        form.areaMin = newQuery.areaMin ? Number(newQuery.areaMin) : FILTER_PARAMETERS.AREA_MIN;
-        form.areaMax = newQuery.areaMax ? Number(newQuery.areaMax) : FILTER_PARAMETERS.AREA_MAX;
-        form.priceMin = newQuery.priceMin ? Number(newQuery.priceMin) : FILTER_PARAMETERS.PRICE_MIN;
-        form.priceMax = newQuery.priceMax ? Number(newQuery.priceMax) : FILTER_PARAMETERS.PRICE_MAX;
-      },
-      { immediate: true }
-  );
+  watch(filterParams, (newParams) => {
+    rooms.value = newParams.rooms;
+    floorMin.value = newParams.floorMin;
+    floorMax.value = newParams.floorMax;
+    areaMin.value = newParams.areaMin;
+    areaMax.value = newParams.areaMax;
+    priceMin.value = newParams.priceMin;
+    priceMax.value = newParams.priceMax;
+  });
+
 
 </script>
 
@@ -87,32 +84,20 @@
           v-if="isFilterVisible"
           @click="isFilterVisible = false"
       >X</button>
-      <div class="filter__rooms">
-        <div class="filter__rooms__title title">комнаты</div>
-        <div class="filter__rooms__buttons">
-          <label v-for="room in roomsValues" :key="room">
-            <input type="checkbox" :value="room" v-model="form.rooms">
-            <span class="filter__rooms__checkbox" :class="{ selected: isSelected(room) }">
-              <template v-if="room === 's'">
-                {{room.toUpperCase()}}
-              </template>
-              <template v-else>
-                {{room}}k
-              </template>
-            </span>
-          </label>
-        </div>
-      </div>
+
+      <RoomsCheckbox
+          v-model:selected-rooms="rooms"
+      />
 
       <div class="separator"></div>
 
       <div class="filter__floor filter-block">
         <div class="filter__floor__title title">этаж</div>
         <RangeSlider
-            v-model:min-value="form.floorMin"
-            v-model:max-value="form.floorMax"
-            :min="FILTER_PARAMETERS.FLOOR_MIN"
-            :max="FILTER_PARAMETERS.FLOOR_MAX"
+            v-model:min-value="floorMin"
+            v-model:max-value="floorMax"
+            :min="DEFAULT_FILTER_PARAMETERS.floorMin"
+            :max="DEFAULT_FILTER_PARAMETERS.floorMax"
             :step="1"
         />
       </div>
@@ -122,10 +107,10 @@
       <div class="filter__area filter-block">
         <div class="filter__area__title title">площадь, <span>м<sup>2</sup></span></div>
         <RangeSlider
-            v-model:min-value="form.areaMin"
-            v-model:max-value="form.areaMax"
-            :min="FILTER_PARAMETERS.AREA_MIN"
-            :max="FILTER_PARAMETERS.AREA_MAX"
+            v-model:min-value="areaMin"
+            v-model:max-value="areaMax"
+            :min="DEFAULT_FILTER_PARAMETERS.areaMin"
+            :max="DEFAULT_FILTER_PARAMETERS.areaMax"
             :step="0.1"
         />
       </div>
@@ -136,10 +121,10 @@
         <div class="filter__price__title title">стоимость, <span>млн.р.</span></div>
 
         <RangeSlider
-            v-model:min-value="form.priceMin"
-            v-model:max-value="form.priceMax"
-            :min="FILTER_PARAMETERS.PRICE_MIN"
-            :max="FILTER_PARAMETERS.PRICE_MAX"
+            v-model:min-value="priceMin"
+            v-model:max-value="priceMax"
+            :min="DEFAULT_FILTER_PARAMETERS.priceMin"
+            :max="DEFAULT_FILTER_PARAMETERS.priceMax"
             :step="0.1"
         />
       </div>
@@ -242,44 +227,6 @@
         border-radius: 10px;
       }
     }
-
-
-    &__rooms {
-
-      &__buttons {
-        display: flex;
-        flex-direction: row;
-
-        input[type="checkbox"] {
-          position: absolute;
-          opacity: 0;
-        }
-      }
-        &__checkbox {
-          display: inline-flex;
-          align-items: center;
-          justify-content: center;
-          margin-right: 5px;
-          margin-bottom: 10px;
-          width: 47px;
-          height: 40px;
-          font-size: 16px;
-          font-weight: 700;
-          border: 1px solid #D8D8D8;
-          border-radius: 5px;
-          background-color: #fff;
-          color: #2C323A;
-          user-select: none;
-          text-align: center;
-          cursor: pointer;
-
-          &.selected {
-            background-color: #70D24E;
-            color: #fff;
-          }
-        }
-    }
-
 
     &__area {
 
