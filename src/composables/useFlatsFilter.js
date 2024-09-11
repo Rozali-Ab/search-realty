@@ -4,23 +4,23 @@ import { DEFAULT_FILTER_PARAMETERS, FILTER_KEYS } from "../constants/filterParam
 
 export function useFlatsFilter() {
   const route = useRoute();
-  const query = route.query;
 
   const filterParams = reactive({
-    rooms: query.rooms ? query.rooms.split(',') : DEFAULT_FILTER_PARAMETERS.rooms,
-    floorMin: query.floorMin ? Number(query.floorMin) : DEFAULT_FILTER_PARAMETERS.floorMin,
-    floorMax: query.floorMax ? Number(query.floorMax) : DEFAULT_FILTER_PARAMETERS.floorMax,
-    areaMin: query.areaMin ? Number(query.areaMin) : DEFAULT_FILTER_PARAMETERS.areaMin,
-    areaMax: query.areaMax ? Number(query.areaMax) : DEFAULT_FILTER_PARAMETERS.areaMax,
-    priceMin: query.priceMin ? Number(query.priceMin) : DEFAULT_FILTER_PARAMETERS.priceMin,
-    priceMax: query.priceMax ? Number(query.priceMax) : DEFAULT_FILTER_PARAMETERS.priceMax
+    rooms: DEFAULT_FILTER_PARAMETERS.rooms,
+    floorMin: DEFAULT_FILTER_PARAMETERS.floorMin,
+    floorMax: DEFAULT_FILTER_PARAMETERS.floorMax,
+    areaMin: DEFAULT_FILTER_PARAMETERS.areaMin,
+    areaMax: DEFAULT_FILTER_PARAMETERS.areaMax,
+    priceMin: DEFAULT_FILTER_PARAMETERS.priceMin,
+    priceMax: DEFAULT_FILTER_PARAMETERS.priceMax
   });
 
   const updateFilterParams = (newQuery) => {
+
     Object.entries(newQuery).reduce((params, [key, value]) => {
 
       if (key === FILTER_KEYS.ROOMS) {
-        params.rooms = value.length !== 0 ? value.split(',') : DEFAULT_FILTER_PARAMETERS[key];
+        params.rooms = !!value.length ? value.split(',') : DEFAULT_FILTER_PARAMETERS[key];
       } else if (Object.keys(filterParams).includes(key)) {
         params[key] = value? Number(value) : DEFAULT_FILTER_PARAMETERS[key];
       }
@@ -31,11 +31,12 @@ export function useFlatsFilter() {
 
 
   watch(
-    () => route,
+    route,
     (newRoute) => {
 
-      if (Object.keys(newRoute.query).length === 0) {
+      if (!Object.keys(newRoute.query).length) {
         updateFilterParams(DEFAULT_FILTER_PARAMETERS);
+        return;
       }
 
       updateFilterParams(newRoute.query);
