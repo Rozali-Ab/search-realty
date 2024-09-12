@@ -1,70 +1,15 @@
 <script setup>
-  import { ref, watch } from 'vue';
+  import { ref } from 'vue';
 
   import RangeSlider from "./RangeSlider.vue";
   import RoomsCheckbox from "./RoomsCheckbox.vue";
 
   import { useFlatsFilter } from "../composables/useFlatsFilter.js";
-  import router from "../router/index.js";
   import { DEFAULT_FILTER_PARAMETERS } from "../constants/filterParameters.js";
 
   const isFilterVisible = ref(false);
 
   const {filterParams} = useFlatsFilter();
-
-  const rooms = ref(filterParams.rooms);
-  const floorMin = ref(filterParams.floorMin);
-  const floorMax = ref(filterParams.floorMax)
-  const areaMin = ref(filterParams.areaMin);
-  const areaMax = ref(filterParams.areaMax);
-  const priceMin = ref(filterParams.priceMin);
-  const priceMax = ref(filterParams.priceMax);
-
-
-  //проверяем изменились ли параметры фильтра, добавляем в запрос при изменении
-  const createNewFilterQuery = () => {
-    const queryParams = {};
-
-    if (rooms.value.length) queryParams.rooms = rooms.value.join(',');
-
-    floorMin.value !== DEFAULT_FILTER_PARAMETERS.floorMin ? queryParams.floorMin = floorMin.value: '' ;
-    floorMax.value !== DEFAULT_FILTER_PARAMETERS.floorMax ? queryParams.floorMax = floorMax.value: '';
-
-    areaMin.value !== DEFAULT_FILTER_PARAMETERS.areaMin ? queryParams.areaMin = areaMin.value: '';
-    areaMax.value !== DEFAULT_FILTER_PARAMETERS.areaMax ? queryParams.areaMax = areaMax.value: '';
-
-    priceMin.value !== DEFAULT_FILTER_PARAMETERS.priceMin ? queryParams.priceMin = priceMin.value: '';
-    priceMax.value !== DEFAULT_FILTER_PARAMETERS.priceMax ? queryParams.priceMax = priceMax.value: '';
-
-    return queryParams;
-  }
-
-  const onApplyFilter = () => {
-
-    const queryParams = createNewFilterQuery();
-
-    router.push({
-      query: queryParams
-    })
-  };
-
-  const onResetFilter = () => {
-
-    router.push({
-      query: {}
-    })
-  };
-
-  watch(filterParams, (newParams) => {
-    rooms.value = newParams.rooms;
-    floorMin.value = newParams.floorMin;
-    floorMax.value = newParams.floorMax;
-    areaMin.value = newParams.areaMin;
-    areaMax.value = newParams.areaMax;
-    priceMin.value = newParams.priceMin;
-    priceMax.value = newParams.priceMax;
-  });
-
 
 </script>
 
@@ -76,7 +21,7 @@
     >
       Фильтровать
     </button>
-    <form @submit.prevent="onApplyFilter" class="filter"
+    <form @submit.prevent class="filter"
           :class="{'filter--active' : isFilterVisible}"
     >
       <button
@@ -86,7 +31,7 @@
       >X</button>
 
       <RoomsCheckbox
-          v-model:selected-rooms="rooms"
+          v-model:selected-rooms="filterParams.rooms"
       />
 
       <div class="separator"></div>
@@ -94,8 +39,8 @@
       <div class="filter__floor filter-block">
         <div class="filter__floor__title title">этаж</div>
         <RangeSlider
-            v-model:min-value="floorMin"
-            v-model:max-value="floorMax"
+            v-model:min-value="filterParams.floorMin"
+            v-model:max-value="filterParams.floorMax"
             :min="DEFAULT_FILTER_PARAMETERS.floorMin"
             :max="DEFAULT_FILTER_PARAMETERS.floorMax"
             :step="1"
@@ -107,8 +52,8 @@
       <div class="filter__area filter-block">
         <div class="filter__area__title title">площадь, <span>м<sup>2</sup></span></div>
         <RangeSlider
-            v-model:min-value="areaMin"
-            v-model:max-value="areaMax"
+            v-model:min-value="filterParams.areaMin"
+            v-model:max-value="filterParams.areaMax"
             :min="DEFAULT_FILTER_PARAMETERS.areaMin"
             :max="DEFAULT_FILTER_PARAMETERS.areaMax"
             :step="0.1"
@@ -121,30 +66,30 @@
         <div class="filter__price__title title">стоимость, <span>млн.р.</span></div>
 
         <RangeSlider
-            v-model:min-value="priceMin"
-            v-model:max-value="priceMax"
+            v-model:min-value="filterParams.priceMin"
+            v-model:max-value="filterParams.priceMax"
             :min="DEFAULT_FILTER_PARAMETERS.priceMin"
             :max="DEFAULT_FILTER_PARAMETERS.priceMax"
             :step="0.1"
         />
       </div>
 
-      <div class="separator"></div>
+<!--      <div class="separator"></div>-->
 
-      <div class="filter__buttons">
-        <button class="filter__buttons__submit"
-          @click="onApplyFilter"
-          type="submit"
-        >
-          Применить
-        </button>
-        <button
-            @click="onResetFilter"
-            class="filter__buttons__reset"
-        >
-          Сбросить фильтр
-        </button>
-      </div>
+<!--      <div class="filter__buttons">-->
+<!--        <button class="filter__buttons__submit"-->
+<!--          @click="onApplyFilter"-->
+<!--          type="submit"-->
+<!--        >-->
+<!--          Применить-->
+<!--        </button>-->
+<!--        <button-->
+<!--            @click="onResetFilter"-->
+<!--            class="filter__buttons__reset"-->
+<!--        >-->
+<!--          Сбросить фильтр-->
+<!--        </button>-->
+<!--      </div>-->
     </form>
   </div>
 </template>

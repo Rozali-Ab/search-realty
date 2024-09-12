@@ -1,9 +1,10 @@
-import { reactive, watch } from "vue";
-import { useRoute } from "vue-router";
-import { DEFAULT_FILTER_PARAMETERS, FILTER_KEYS } from "../constants/filterParameters.js";
+import { computed, reactive, ref } from "vue";
+import { DEFAULT_FILTER_PARAMETERS, MULTIPLIER_MILLION_TO_RUBLES } from "../constants/filterParameters.js";
+import { data } from "../mock/mock.json";
+
+const flats = ref(data);
 
 export function useFlatsFilter() {
-  const route = useRoute();
 
   const filterParams = reactive({
     rooms: DEFAULT_FILTER_PARAMETERS.rooms,
@@ -15,34 +16,16 @@ export function useFlatsFilter() {
     priceMax: DEFAULT_FILTER_PARAMETERS.priceMax
   });
 
-  const updateFilterParams = (newQuery) => {
+  const filteredFlats = computed(() => {
+    return  flats.value.filter((flat) => {
+      const matchesRooms = !filterParams.rooms.length || filterParams.rooms.includes(flat.rooms.toString());
+      const matchesFloor = flat.floor >= filterParams.floorMin && flat.floor <= filterParams.floorMax;
+      const matchesArea = flat.area >= filterParams.areaMin && flat.area <= filterParams.areaMax;
+      const matchesPrice = flat.price >= filterParams.priceMin * MULTIPLIER_MILLION_TO_RUBLES && flat.price <= filterParams.priceMax * MULTIPLIER_MILLION_TO_RUBLES;
 
-    Object.entries(newQuery).reduce((params, [key, value]) => {
+      return matchesRooms && matchesFloor && matchesArea && matchesPrice;
+    });
+  });
 
-      if (key === FILTER_KEYS.ROOMS) {
-        params.rooms = !!value.length ? value.split(',') : DEFAULT_FILTER_PARAMETERS[key];
-      } else if (Object.keys(filterParams).includes(key)) {
-        params[key] = value? Number(value) : DEFAULT_FILTER_PARAMETERS[key];
-      }
-      return params;
-    }, filterParams);
-  };
-
-
-
-  watch(
-    route,
-    (newRoute) => {
-
-      if (!Object.keys(newRoute.query).length) {
-        updateFilterParams(DEFAULT_FILTER_PARAMETERS);
-        return;
-      }
-
-      updateFilterParams(newRoute.query);
-    },
-    { immediate: true, deep: true }
-  );
-
-  return { filterParams };
+  return { filterParams, filteredFlats};
 }

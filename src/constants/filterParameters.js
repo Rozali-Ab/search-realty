@@ -17,3 +17,5 @@ export const FILTER_KEYS = {
   PRICE_MIN: 'priceMin',
   PRICE_MAX: 'priceMax',
 }
+
+export const MULTIPLIER_MILLION_TO_RUBLES = 1000000;
