@@ -1,20 +1,22 @@
-import { computed, reactive, ref } from "vue";
+import { computed, reactive, ref, watch, watchEffect } from "vue";
 import { DEFAULT_FILTER_PARAMETERS, MULTIPLIER_MILLION_TO_RUBLES } from "../constants/filterParameters.js";
-import { data } from "../mock/mock.json";
+import { fetchFlats } from "../mock/fetchFlats.js";
 
-const flats = ref(data);
+const flats = ref([]);
+
+const filterParams = reactive({
+  rooms: DEFAULT_FILTER_PARAMETERS.rooms,
+  floorMin: DEFAULT_FILTER_PARAMETERS.floorMin,
+  floorMax: DEFAULT_FILTER_PARAMETERS.floorMax,
+  areaMin: DEFAULT_FILTER_PARAMETERS.areaMin,
+  areaMax: DEFAULT_FILTER_PARAMETERS.areaMax,
+  priceMin: DEFAULT_FILTER_PARAMETERS.priceMin,
+  priceMax: DEFAULT_FILTER_PARAMETERS.priceMax
+});
+
+const isLoading = ref(false);
 
 export function useFlatsFilter() {
-
-  const filterParams = reactive({
-    rooms: DEFAULT_FILTER_PARAMETERS.rooms,
-    floorMin: DEFAULT_FILTER_PARAMETERS.floorMin,
-    floorMax: DEFAULT_FILTER_PARAMETERS.floorMax,
-    areaMin: DEFAULT_FILTER_PARAMETERS.areaMin,
-    areaMax: DEFAULT_FILTER_PARAMETERS.areaMax,
-    priceMin: DEFAULT_FILTER_PARAMETERS.priceMin,
-    priceMax: DEFAULT_FILTER_PARAMETERS.priceMax
-  });
 
   const filteredFlats = computed(() => {
     return  flats.value.filter((flat) => {
@@ -27,5 +29,15 @@ export function useFlatsFilter() {
     });
   });
 
-  return { filterParams, filteredFlats};
+  watch(filterParams,() => {
+
+    isLoading.value = true;
+
+    fetchFlats()
+      .then((response) => flats.value = response)
+      .finally(() => isLoading.value = false);
+
+  }, {immediate: true})
+
+  return { filterParams, filteredFlats, isLoading};
 }
