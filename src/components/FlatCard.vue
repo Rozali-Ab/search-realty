@@ -22,8 +22,9 @@
 </script>
 
 <template>
-  <div
-    :class="['card', {'card--active' : isHovered}]"
+<div
+    class="card"
+    :class="[{'card--active' : isHovered}]"
     @mouseover="isHovered = true"
     @mouseleave="isHovered = false"
   >
@@ -77,7 +78,7 @@
     flex-direction: column;
     width: 27rem;
     height: 36.5rem;
-    margin: 15px;
+    margin: 0 15px 15px 0;
     padding: 10px;
     background-color: #fff;
     color: #000;
@@ -284,5 +285,5 @@
       }
     }
 
-  }
+}
 </style>

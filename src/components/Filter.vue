@@ -9,7 +9,7 @@
 
   const isFilterVisible = ref(false);
 
-  const {filterParams} = useFlatsFilter();
+  const {filterParams, isLoading} = useFlatsFilter();
 
 </script>
 
@@ -32,11 +32,14 @@
 
       <RoomsCheckbox
           v-model:selected-rooms="filterParams.rooms"
+          :isLoading = "isLoading"
       />
 
       <div class="separator"></div>
 
-      <div class="filter__floor filter-block">
+      <div class="filter__floor filter-block"
+          :class="{'filter-block--loading': isLoading}"
+      >
         <div class="filter__floor__title title">этаж</div>
         <RangeSlider
             v-model:min-value="filterParams.floorMin"
@@ -49,7 +52,9 @@
 
       <div class="separator"></div>
 
-      <div class="filter__area filter-block">
+      <div class="filter__area filter-block"
+           :class="{'filter-block--loading': isLoading}"
+      >
         <div class="filter__area__title title">площадь, <span>м<sup>2</sup></span></div>
         <RangeSlider
             v-model:min-value="filterParams.areaMin"
@@ -62,7 +67,9 @@
 
       <div class="separator"></div>
 
-      <div class="filter__price filter-block">
+      <div class="filter__price filter-block"
+           :class="{'filter-block--loading': isLoading}"
+      >
         <div class="filter__price__title title">стоимость, <span>млн.р.</span></div>
 
         <RangeSlider
@@ -260,6 +267,32 @@
       display: flex;
       flex-direction: column;
       width: 175px;
+    }
+
+    .filter-block--loading {
+      position: relative;
+
+      &:after {
+        content: '';
+        position: absolute;
+        top: 28px;
+        left: 0;
+        min-width: 175px;
+        height: 40px;
+        border-radius: 5px;
+        background: linear-gradient(90deg, rgba(112, 210, 78, 0.46) 25%, rgba(224, 224, 224, 0.6) 50%, rgba(112, 210, 78, 0.52) 75%);
+        background-size: 200% 100%;
+        animation: gradientAnimation 1.5s ease-in-out infinite;
+
+        @keyframes gradientAnimation {
+          0% {
+            background-position: 200% 0;
+          }
+          100% {
+            background-position: -200% 0;
+          }
+        }
+      }
     }
 
     .separator {
