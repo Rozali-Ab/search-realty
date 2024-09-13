@@ -17,8 +17,13 @@
   const pricePerMeter = computed(() => formatPrice(calculatePricePerMeter()));
 
   const isHovered = ref(false);
+  const hasImgError = ref(false);
+
   const imgSrc = `../src/assets/${props.flat.img}`;
 
+  const onImageError = () => {
+    hasImgError.value = true;
+  }
 </script>
 
 <template>
@@ -51,7 +56,11 @@
       <div class="card__body">
         <div class="card__body__number">&#8470;{{flat.id}}</div>
         <div class="card__body__img">
-          <img :src="imgSrc" :alt="`flat_${flat.id}`">
+          <div v-if="hasImgError" class="card__body__img--error"></div>
+          <img v-else
+            :src="imgSrc" :alt="`flat_${flat.id}`"
+            @error="onImageError"
+          >
         </div>
       </div>
 
@@ -157,6 +166,10 @@
           transform: rotate(90deg);
           transition: width 300ms ease-out;
           filter: saturate(1.7);
+        }
+
+        &--error {
+          width: 188px;
         }
       }
 
