@@ -4,8 +4,6 @@ export const fetchFlats = () => {
 
   return new Promise((resolve) => {
 
-    setTimeout(() => {
-      resolve(data);
-    }, 500)
+    resolve(data);
   })
 }

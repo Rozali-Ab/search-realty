@@ -1,6 +1,7 @@
 import { computed, reactive, ref, watch, watchEffect } from "vue";
 import { DEFAULT_FILTER_PARAMETERS, MULTIPLIER_MILLION_TO_RUBLES } from "../constants/filterParameters.js";
 import { fetchFlats } from "../mock/fetchFlats.js";
+import { debounce } from "../mock/debounce.js";
 
 const flats = ref([]);
 
@@ -14,7 +15,16 @@ const filterParams = reactive({
   priceMax: DEFAULT_FILTER_PARAMETERS.priceMax
 });
 
-const isLoading = ref(false);
+const isLoading = ref(true);
+
+const updateFlats =  () => {
+
+  fetchFlats()
+    .then((response) => flats.value = response)
+    .finally(() => isLoading.value = false);
+}
+
+const debouncedUpdateFlats = debounce(updateFlats, 500);
 
 export function useFlatsFilter() {
 
@@ -29,15 +39,11 @@ export function useFlatsFilter() {
     });
   });
 
-  watch(filterParams,() => {
-
+  watch(filterParams, () => {
     isLoading.value = true;
 
-    fetchFlats()
-      .then((response) => flats.value = response)
-      .finally(() => isLoading.value = false);
-
-  }, {immediate: true})
+    debouncedUpdateFlats()
+    }, {immediate: true})
 
   return { filterParams, filteredFlats, isLoading};
 }
