@@ -13,7 +13,6 @@
     return parseFloat(price).toLocaleString('ru-RU');
   };
 
-  const isHovered = ref(false);
   const hasImgError = ref(false);
 
   const id = props.flat.id;
@@ -31,12 +30,7 @@
 </script>
 
 <template>
-<div
-    class="card"
-    :class="{'card--active' : isHovered}"
-    @mouseover="isHovered = true"
-    @mouseleave="isHovered = false"
-  >
+<div class="card">
     <div class="card__header">
       <div class="card__header__floor">
         <span>{{floor}}</span>
@@ -221,83 +215,107 @@
         box-shadow: 0 5px 10px 0 #70D24E;
       }
     }
+}
 
-    &--active {
-      box-shadow: 0 5px 20px 0 #56565640;
+.card:hover {
+  box-shadow: 0 5px 20px 0 #56565640;
 
-      .card__body {
-        height: 20rem;
+  .card__body {
+    height: 20rem;
+
+    img {
+      width: 152px;
+    }
+  }
+
+  .card__btn {
+    height: 4rem;
+
+    &__span {
+      display: inline-block;
+      text-transform: uppercase;
+      font-size: 1.4rem;
+      font-weight: lighter;
+      line-height: 2.8rem;
+    }
+  }
+}
+
+@media (hover: none) and (pointer: coarse) {
+  .card {
+    box-shadow: none;
+
+    &:hover {
+      box-shadow: none;
+    }
+  }
+    .card__body {
+      max-height: 20rem;
+
+      img {
+        max-width: 152px;
       }
+    }
 
-      .card__btn {
-        height: 4rem;
+    .card__btn {
+      height: 4rem;
 
-        &__span {
-          display: inline-block;
-          text-transform: uppercase;
-          font-size: 1.4rem;
-          font-weight: lighter;
-          line-height: 2.8rem;
-        }
+      &__span {
+        display: inline-block;
+        text-transform: uppercase;
+        font-size: 1.4rem;
+        font-weight: lighter;
+        line-height: 2.8rem;
+      }
+    }
+}
+
+@media (max-width: 575px) {
+  .card {
+    width: 100%;
+    height: auto;
+
+    &__header {
+      font-size: 1.5rem;
+    }
+
+    &__body {
+      width: calc(50vw - 2rem);
+      max-width: 25rem;
+      height: 10rem;
+
+      &__number {
+        width: calc(15vw - 2rem);
       }
 
       img {
-        width: 152px;
+        width: 70px;
       }
     }
 
-    @media (max-width: 575px) {
-      width: 100%;
-      height: auto;
+    &__price__total {
+      font-size: 1.5rem;
+    }
 
-      &__header {
-        font-size: 1.5rem;
-      }
+    &__btn {
+      width: calc(50vw - 2rem);
+      max-width: 25rem;
+      height: 4rem;
 
-      &__body {
-        width: calc(50vw - 2rem);
-        max-width: 25rem;
-        height: 10rem;
-
-        img {
-          width: 70px;
-        }
-      }
-
-      &__price__total {
-          font-size: 1.5rem;
-      }
-
-     &__btn {
-       width: calc(50vw - 2rem);
-       max-width: 25rem;
-       height: 4rem;
-
-       &__span {
-         display: inline-block;
-         text-transform: uppercase;
-         font-size: 1.4rem;
-         font-weight: lighter;
-         line-height: 2.8rem;
-       }
-     }
-
-      &--active {
-        .card__body {
-          height: auto;
-        }
-
-        img {
-          width: 70px;
-        }
-      }
-
-      .mobile-wrapper {
-        display: flex;
-        flex-direction: row;
-        justify-content: space-between;
+      &__span {
+        display: inline-block;
+        text-transform: uppercase;
+        font-size: 1.4rem;
+        font-weight: lighter;
+        line-height: 2.8rem;
       }
     }
 
+    .mobile-wrapper {
+      display: flex;
+      flex-direction: row;
+      justify-content: space-between;
+    }
+  }
 }
 </style>
