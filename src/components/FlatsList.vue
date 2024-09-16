@@ -17,11 +17,16 @@
 <style lang="scss" scoped>
   .flats-list {
     display: flex;
-    justify-content: flex-start;
     flex-wrap: wrap;
+    max-width: 1140px;
+    margin: 0 auto;
 
     @media (max-width: 1200px) {
-      justify-content: center;
+      max-width: 855px;
+    }
+
+    @media (max-width: 900px) {
+      max-width: 570px;
     }
   }
 </style>

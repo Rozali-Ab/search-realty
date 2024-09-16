@@ -1,48 +1,49 @@
-import { reactive, watch } from "vue";
-import { useRoute } from "vue-router";
-import { DEFAULT_FILTER_PARAMETERS, FILTER_KEYS } from "../constants/filterParameters.js";
+import { computed, reactive, ref, watch, watchEffect } from "vue";
+import { DEFAULT_FILTER_PARAMETERS, MULTIPLIER_MILLION_TO_RUBLES } from "../constants/filterParameters.js";
+import { fetchFlats } from "../mock/fetchFlats.js";
+import { debounce } from "../mock/debounce.js";
+
+const flats = ref([]);
+
+const filterParams = reactive({
+  rooms: DEFAULT_FILTER_PARAMETERS.rooms,
+  floorMin: DEFAULT_FILTER_PARAMETERS.floorMin,
+  floorMax: DEFAULT_FILTER_PARAMETERS.floorMax,
+  areaMin: DEFAULT_FILTER_PARAMETERS.areaMin,
+  areaMax: DEFAULT_FILTER_PARAMETERS.areaMax,
+  priceMin: DEFAULT_FILTER_PARAMETERS.priceMin,
+  priceMax: DEFAULT_FILTER_PARAMETERS.priceMax
+});
+
+const isLoading = ref(true);
+
+const updateFlats =  () => {
+
+  fetchFlats()
+    .then((response) => flats.value = response)
+    .finally(() => isLoading.value = false);
+}
+
+const debouncedUpdateFlats = debounce(updateFlats, 500);
 
 export function useFlatsFilter() {
-  const route = useRoute();
 
-  const filterParams = reactive({
-    rooms: DEFAULT_FILTER_PARAMETERS.rooms,
-    floorMin: DEFAULT_FILTER_PARAMETERS.floorMin,
-    floorMax: DEFAULT_FILTER_PARAMETERS.floorMax,
-    areaMin: DEFAULT_FILTER_PARAMETERS.areaMin,
-    areaMax: DEFAULT_FILTER_PARAMETERS.areaMax,
-    priceMin: DEFAULT_FILTER_PARAMETERS.priceMin,
-    priceMax: DEFAULT_FILTER_PARAMETERS.priceMax
+  const filteredFlats = computed(() => {
+    return  flats.value.filter((flat) => {
+      const matchesRooms = !filterParams.rooms.length || filterParams.rooms.includes(flat.rooms.toString());
+      const matchesFloor = flat.floor >= filterParams.floorMin && flat.floor <= filterParams.floorMax;
+      const matchesArea = flat.area >= filterParams.areaMin && flat.area <= filterParams.areaMax;
+      const matchesPrice = flat.price >= filterParams.priceMin * MULTIPLIER_MILLION_TO_RUBLES && flat.price <= filterParams.priceMax * MULTIPLIER_MILLION_TO_RUBLES;
+
+      return matchesRooms && matchesFloor && matchesArea && matchesPrice;
+    });
   });
 
-  const updateFilterParams = (newQuery) => {
+  watch(filterParams, () => {
+    isLoading.value = true;
 
-    Object.entries(newQuery).reduce((params, [key, value]) => {
+    debouncedUpdateFlats()
+    }, {immediate: true})
 
-      if (key === FILTER_KEYS.ROOMS) {
-        params.rooms = !!value.length ? value.split(',') : DEFAULT_FILTER_PARAMETERS[key];
-      } else if (Object.keys(filterParams).includes(key)) {
-        params[key] = value? Number(value) : DEFAULT_FILTER_PARAMETERS[key];
-      }
-      return params;
-    }, filterParams);
-  };
-
-
-
-  watch(
-    route,
-    (newRoute) => {
-
-      if (!Object.keys(newRoute.query).length) {
-        updateFilterParams(DEFAULT_FILTER_PARAMETERS);
-        return;
-      }
-
-      updateFilterParams(newRoute.query);
-    },
-    { immediate: true, deep: true }
-  );
-
-  return { filterParams };
+  return { filterParams, filteredFlats, isLoading};
 }

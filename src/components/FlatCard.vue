@@ -1,6 +1,6 @@
 <script setup>
-
   import { defineProps, computed, ref } from "vue";
+  import { ROOMS_COUNT_TITLES } from "../constants/roomsCountTitles.js";
 
   const props = defineProps({
     flat: Object,
@@ -13,55 +13,60 @@
     return parseFloat(price).toLocaleString('ru-RU');
   };
 
-  const formattedPrice = computed(() => formatPrice(props.flat.price));
-  const pricePerMeter = computed(() => formatPrice(calculatePricePerMeter()));
+  const hasImgError = ref(false);
 
-  const isHovered = ref(false);
+  const id = props.flat.id;
+  const floor = props.flat.floor + ' этаж';
+  const rooms = ROOMS_COUNT_TITLES[props.flat.rooms];
+  const area = props.flat.area;
   const imgSrc = `../src/assets/${props.flat.img}`;
+  const flatRouteLink = '/flats/' + props.flat.id;
+  const formattedPrice = computed(() => formatPrice(props.flat.price) + 'p.');
+  const pricePerMeter = computed(() => formatPrice(calculatePricePerMeter()) + ' р. за м');
 
+  const onImageError = () => {
+    hasImgError.value = true;
+  }
 </script>
 
 <template>
-  <div
-    :class="['card', {'card--active' : isHovered}]"
-    @mouseover="isHovered = true"
-    @mouseleave="isHovered = false"
-  >
+<div class="card">
     <div class="card__header">
       <div class="card__header__floor">
-        <span>{{flat.floor}} этаж</span>
+        <span>{{floor}}</span>
       </div>
 
       <div class="card__header--wrapper">
         <div class="card__header__rooms">
-          <span v-if="flat.rooms === 's'">Студия</span>
-          <span v-else-if="flat.rooms === '1'"> {{flat.rooms}} комната</span>
-          <span v-else-if="Number(flat.rooms) > 1 && Number(flat.rooms) < 5"> {{flat.rooms}} комнаты</span>
-          <span v-else> {{flat.rooms}} комнат </span>
+          <span>{{rooms}}</span>
         </div>
         <span class="card__header__symbol">-</span>
         <div class="card__header__area">
-          {{flat.area}}м<sup>2</sup>
+          {{area}}м<sup>2</sup>
         </div>
       </div>
     </div>
 
     <div class="mobile-wrapper">
       <div class="card__body">
-        <div class="card__body__number">&#8470;{{flat.id}}</div>
+        <div class="card__body__number">&#8470;{{id}}</div>
         <div class="card__body__img">
-          <img :src="imgSrc" :alt="`flat_${flat.id}`">
+          <div v-if="hasImgError" class="card__body__img--error"></div>
+          <img v-else
+            :src="imgSrc" alt="flat"
+            @error="onImageError"
+          >
         </div>
       </div>
 
       <div class="card__price">
-        <div class="card__price__total">{{formattedPrice}}р.</div>
-        <div class="card__price__per-meter">{{pricePerMeter}} р. за м<sup>2</sup></div>
+        <div class="card__price__total">{{formattedPrice}}</div>
+        <div class="card__price__per-meter">{{pricePerMeter}}<sup>2</sup></div>
       </div>
     </div>
 
 
-    <RouterLink :to="'/flats/' + flat.id">
+    <RouterLink :to="flatRouteLink">
       <div class="card__btn">
         <span class="card__btn__span">Подробнее</span>
       </div>
@@ -77,7 +82,7 @@
     flex-direction: column;
     width: 27rem;
     height: 36.5rem;
-    margin: 15px;
+    margin: 0 15px 15px 0;
     padding: 10px;
     background-color: #fff;
     color: #000;
@@ -157,6 +162,10 @@
           transition: width 300ms ease-out;
           filter: saturate(1.7);
         }
+
+        &--error {
+          width: 188px;
+        }
       }
 
     }
@@ -206,83 +215,107 @@
         box-shadow: 0 5px 10px 0 #70D24E;
       }
     }
+}
 
-    &--active {
-      box-shadow: 0 5px 20px 0 #56565640;
+.card:hover {
+  box-shadow: 0 5px 20px 0 #56565640;
 
-      .card__body {
-        height: 20rem;
+  .card__body {
+    height: 20rem;
+
+    img {
+      width: 152px;
+    }
+  }
+
+  .card__btn {
+    height: 4rem;
+
+    &__span {
+      display: inline-block;
+      text-transform: uppercase;
+      font-size: 1.4rem;
+      font-weight: lighter;
+      line-height: 2.8rem;
+    }
+  }
+}
+
+@media (hover: none) and (pointer: coarse) {
+  .card {
+    box-shadow: none;
+
+    &:hover {
+      box-shadow: none;
+    }
+  }
+    .card__body {
+      max-height: 20rem;
+
+      img {
+        max-width: 152px;
       }
+    }
 
-      .card__btn {
-        height: 4rem;
+    .card__btn {
+      height: 4rem;
 
-        &__span {
-          display: inline-block;
-          text-transform: uppercase;
-          font-size: 1.4rem;
-          font-weight: lighter;
-          line-height: 2.8rem;
-        }
+      &__span {
+        display: inline-block;
+        text-transform: uppercase;
+        font-size: 1.4rem;
+        font-weight: lighter;
+        line-height: 2.8rem;
+      }
+    }
+}
+
+@media (max-width: 575px) {
+  .card {
+    width: 100%;
+    height: auto;
+
+    &__header {
+      font-size: 1.5rem;
+    }
+
+    &__body {
+      width: calc(50vw - 2rem);
+      max-width: 25rem;
+      height: 10rem;
+
+      &__number {
+        width: calc(15vw - 2rem);
       }
 
       img {
-        width: 152px;
+        width: 70px;
       }
     }
 
-    @media (max-width: 575px) {
-      width: 100%;
-      height: auto;
+    &__price__total {
+      font-size: 1.5rem;
+    }
 
-      &__header {
-        font-size: 1.5rem;
-      }
+    &__btn {
+      width: calc(50vw - 2rem);
+      max-width: 25rem;
+      height: 4rem;
 
-      &__body {
-        width: calc(50vw - 2rem);
-        max-width: 25rem;
-        height: 10rem;
-
-        img {
-          width: 70px;
-        }
-      }
-
-      &__price__total {
-          font-size: 1.5rem;
-      }
-
-     &__btn {
-       width: calc(50vw - 2rem);
-       max-width: 25rem;
-       height: 4rem;
-
-       &__span {
-         display: inline-block;
-         text-transform: uppercase;
-         font-size: 1.4rem;
-         font-weight: lighter;
-         line-height: 2.8rem;
-       }
-     }
-
-      &--active {
-        .card__body {
-          height: auto;
-        }
-
-        img {
-          width: 70px;
-        }
-      }
-
-      .mobile-wrapper {
-        display: flex;
-        flex-direction: row;
-        justify-content: space-between;
+      &__span {
+        display: inline-block;
+        text-transform: uppercase;
+        font-size: 1.4rem;
+        font-weight: lighter;
+        line-height: 2.8rem;
       }
     }
 
+    .mobile-wrapper {
+      display: flex;
+      flex-direction: row;
+      justify-content: space-between;
+    }
   }
+}
 </style>
