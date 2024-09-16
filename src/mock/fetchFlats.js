@@ -3,7 +3,8 @@ import { data } from "./mock.json";
 export const fetchFlats = () => {
 
   return new Promise((resolve) => {
-
-    resolve(data);
+    setTimeout(() => {
+      resolve(data);
+    }, 300)
   })
 }
