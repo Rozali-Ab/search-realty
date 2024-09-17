@@ -19,23 +19,42 @@
   </div>
 </template>
 
-<script setup>
-  const selectedRooms = defineModel('selectedRooms');
-
-  defineProps({
-    isLoading: {
-      type: Boolean,
-      default: true
-    }
-  })
-
+<script>
   import { ROOMS_CHECKBOX_VALUES } from "../constants/roomsCheckboxValues.js";
 
-
-  const roomsValues = Object.keys(ROOMS_CHECKBOX_VALUES);
-
-  const isSelected = (room) => {
-    return selectedRooms.value.includes(room);
+  export default {
+    name: "RoomsCheckbox",
+    props: {
+      modelValue: {
+        type: Array,
+        required: true
+      },
+      isLoading: {
+        type: Boolean,
+        default: false
+      }
+    },
+    computed: {
+      selectedRooms: {
+        get() {
+          return this.modelValue;
+        },
+        set(value) {
+          this.$emit('update:modelValue', value);
+        }
+      }
+    },
+    data() {
+      return {
+        roomsValues: Object.keys(ROOMS_CHECKBOX_VALUES),
+        ROOMS_CHECKBOX_VALUES
+      };
+    },
+    methods: {
+      isSelected(room) {
+        return this.selectedRooms.includes(room);
+      }
+    }
   };
 
 </script>

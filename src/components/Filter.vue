@@ -42,7 +42,7 @@
       >X</button>
 
       <RoomsCheckbox
-          v-model:selected-rooms="filterParams.rooms"
+          v-model="filterParams.rooms"
           :isLoading = "isLoading"
       />
 
