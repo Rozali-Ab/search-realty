@@ -1,5 +1,5 @@
 <script setup>
-  import { computed, ref, watch } from 'vue';
+  import { computed, reactive, ref, watch } from 'vue';
   import { useStore } from "vuex";
 
   import RangeSlider from "./RangeSlider.vue";
@@ -13,7 +13,7 @@
   const store = useStore();
   const isLoading = computed(() => store.state.isLoading);
 
-  const filterParams = store.state.filterParams;
+  const filterParams = reactive({ ...store.state.filterParams });
 
   const dispatchStore = () => store.dispatch('updateFilterParams', filterParams);
   const debouncedAction = debounce(dispatchStore, 700);
