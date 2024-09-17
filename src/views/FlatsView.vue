@@ -1,9 +1,14 @@
 <script setup>
-  import { useFlatsFilter } from "../composables/useFlatsFilter.js";
   import FlatsList from "../components/FlatsList.vue";
   import ListSkeleton from "../components/ListSkeleton.vue";
 
-  const { filteredFlats, isLoading } = useFlatsFilter();
+  import { computed } from "vue";
+  import { useStore } from "vuex";
+
+  const store = useStore();
+
+  const filteredFlats = computed(() => store.state.filteredFlats);
+  const isLoading = computed(() => store.state.isLoading)
 
 </script>
 
