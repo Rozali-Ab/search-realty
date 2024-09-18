@@ -1,3 +1,4 @@
+/*
 import { computed, reactive, ref, watch, watchEffect } from "vue";
 import { DEFAULT_FILTER_PARAMETERS, MULTIPLIER_MILLION_TO_RUBLES } from "../constants/filterParameters.js";
 import { fetchFlats } from "../mock/fetchFlats.js";
@@ -47,3 +48,4 @@ export function useFlatsFilter() {
 
   return { filterParams, filteredFlats, isLoading};
 }
+*/

@@ -1,15 +1,24 @@
 <script setup>
-  import { ref } from 'vue';
+  import { computed, reactive, ref, watch } from 'vue';
+  import { useStore } from "vuex";
 
   import RangeSlider from "./RangeSlider.vue";
   import RoomsCheckbox from "./RoomsCheckbox.vue";
 
-  import { useFlatsFilter } from "../composables/useFlatsFilter.js";
+  import { debounce } from "../mock/debounce.js";
   import { DEFAULT_FILTER_PARAMETERS } from "../constants/filterParameters.js";
 
   const isFilterVisible = ref(false);
 
-  const {filterParams, isLoading} = useFlatsFilter();
+  const store = useStore();
+  const isLoading = computed(() => store.state.isLoading);
+
+  const filterParams = reactive({ ...store.state.filterParams });
+
+  const updateFilterParams = () => store.dispatch('updateFilterParams', filterParams);
+  const debouncedUpdate = debounce(updateFilterParams, 700);
+
+  watch(filterParams, debouncedUpdate)
 
 </script>
 
@@ -31,7 +40,7 @@
       >X</button>
 
       <RoomsCheckbox
-          v-model:selected-rooms="filterParams.rooms"
+          v-model="filterParams.rooms"
           :isLoading = "isLoading"
       />
 
