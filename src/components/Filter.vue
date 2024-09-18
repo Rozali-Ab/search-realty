@@ -15,12 +15,10 @@
 
   const filterParams = reactive({ ...store.state.filterParams });
 
-  const dispatchStore = () => store.dispatch('updateFilterParams', filterParams);
-  const debouncedAction = debounce(dispatchStore, 700);
+  const updateFilterParams = () => store.dispatch('updateFilterParams', filterParams);
+  const debouncedUpdate = debounce(updateFilterParams, 700);
 
-  watch(filterParams, () => {
-    debouncedAction();
-  })
+  watch(filterParams, debouncedUpdate)
 
 </script>
 
